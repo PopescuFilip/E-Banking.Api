@@ -1,8 +1,6 @@
 using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +27,7 @@ using (var scope = app.Services.CreateScope())
     {
         var admin = new User()
         {
-            Username = "admin",
+            Email = "admin@gmail.com",
             Password = "pass",
         };
 
