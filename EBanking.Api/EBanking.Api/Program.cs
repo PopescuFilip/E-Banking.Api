@@ -28,7 +28,7 @@ using (var scope = app.Services.CreateScope())
         var admin = new User()
         {
             Email = "admin@gmail.com",
-            Password = "pass",
+            Password = "pass"
         };
 
         dbContext.Users.Add(admin);
