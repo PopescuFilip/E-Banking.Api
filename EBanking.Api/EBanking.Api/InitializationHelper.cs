@@ -15,11 +15,7 @@ public class InitializationHelper(IDbContextFactory<EBankingDbContext> _dbContex
 
         if (!dbContext.Users.Any())
         {
-            var admin = new User()
-            {
-                Email = "admin@gmail.com",
-                Password = "pass"
-            };
+            var admin = new User(email: "admin@gmail.com", password: "pass");
 
             dbContext.Users.Add(admin);
             dbContext.SaveChanges();
