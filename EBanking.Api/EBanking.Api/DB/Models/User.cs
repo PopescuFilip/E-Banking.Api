@@ -12,4 +12,7 @@ public class User
 
     [Required]
     public string Password { get; set; } = null!;
+
+    public User(string email, string password) =>
+        (Email, Password) = (email, password);
 }
