@@ -1,7 +1,6 @@
 ﻿using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace EBanking.Api;
 
