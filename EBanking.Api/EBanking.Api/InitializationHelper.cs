@@ -1,0 +1,23 @@
+﻿using EBanking.Api.DB;
+using EBanking.Api.DB.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace EBanking.Api;
+
+public class InitializationHelper(IDbContextFactory<EBankingDbContext> _dbContextFactory)
+{
+    public void MigrateAndInitializeDb()
+    {
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        dbContext.Database.Migrate();
+
+        if (!dbContext.Users.Any())
+        {
+            var admin = new User(email: "admin@gmail.com", password: "pass");
+
+            dbContext.Users.Add(admin);
+            dbContext.SaveChanges();
+        }
+    }
+}

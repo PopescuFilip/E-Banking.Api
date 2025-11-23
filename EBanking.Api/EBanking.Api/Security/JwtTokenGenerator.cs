@@ -5,6 +5,11 @@ using static EBanking.Api.Security.JwtDefaults;
 
 namespace EBanking.Api.Security;
 
+public interface IJwtTokenGenerator
+{
+    string GenerateToken(string username);
+}
+
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;

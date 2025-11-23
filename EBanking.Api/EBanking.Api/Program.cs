@@ -1,9 +1,6 @@
 using EBanking.Api;
-using EBanking.Api.DB;
-using EBanking.Api.DB.Models;
 using EBanking.Api.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(SwaggerConfigurator.AddJwtAuthenticationSupport);
 
-builder.Services.AddDbContextFactory<EBankingDbContext, EBankingDbContextFactory>();
-builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerConfigurator.Configure);
@@ -27,23 +23,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<EBankingDbContext>>();
-
-    using var dbContext = dbContextFactory.CreateDbContext();
-
-    dbContext.Database.Migrate();
-
-    if (!dbContext.Users.Any())
-    {
-        var admin = new User()
-        {
-            Email = "admin@gmail.com",
-            Password = "pass"
-        };
-
-        dbContext.Users.Add(admin);
-        dbContext.SaveChanges();
-    }
+    scope.ServiceProvider.GetRequiredService<InitializationHelper>().MigrateAndInitializeDb();
 }
 
 // Configure the HTTP request pipeline.
