@@ -24,7 +24,7 @@ public class AuthController(
         var (email, password) = loginInfo;
 
         if (!_userService.Exists(email, password))
-            return BadRequest(InvalidLoginMessage);
+            return Unauthorized(InvalidLoginMessage);
 
         var token = _jwtTokenGenerator.GenerateToken(email);
             return Ok(token);
