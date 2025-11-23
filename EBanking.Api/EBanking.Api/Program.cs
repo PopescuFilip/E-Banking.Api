@@ -1,10 +1,9 @@
+using EBanking.Api;
 using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
 using EBanking.Api.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using static EBanking.Api.Security.JwtDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,23 +13,13 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(SwaggerHelper.AddJwtAuthenticationSupport);
+builder.Services.AddSwaggerGen(SwaggerConfigurator.AddJwtAuthenticationSupport);
 
 builder.Services.AddDbContextFactory<EBankingDbContext, EBankingDbContextFactory>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = Key
-        };
-    });
+    .AddJwtBearer(JwtBearerConfigurator.Configure);
 
 builder.Services.AddAuthorization();
 

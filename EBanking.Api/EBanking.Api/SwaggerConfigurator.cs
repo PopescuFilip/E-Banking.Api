@@ -1,9 +1,9 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace EBanking.Api.Security;
+namespace EBanking.Api;
 
-public static class SwaggerHelper
+public static class SwaggerConfigurator
 {
     private const string BearerSecuritySchemeId = "BearerId";
 
