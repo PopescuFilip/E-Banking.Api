@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api.Services;
 
+public interface IUserService
+{
+    bool Exists(string email);
+    bool Exists(string email, string password);
+    bool Create(string email, string password);
+}
+
 public class UserService(IDbContextFactory<EBankingDbContext> _dbContextFactory) : IUserService
 {
     public bool Exists(string email)
