@@ -1,11 +1,10 @@
-using EBanking.Api;
 using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
+using EBanking.Api.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using static EBanking.Api.Constants;
+using static EBanking.Api.Security.JwtDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(SwaggerHelper.AddJwtAuthenticationSupport);
 
 builder.Services.AddDbContextFactory<EBankingDbContext, EBankingDbContextFactory>();
+builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Secret))
+            IssuerSigningKey = Key
         };
     });
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace EBanking.Api;
+namespace EBanking.Api.Security;
 
 public static class SwaggerHelper
 {
