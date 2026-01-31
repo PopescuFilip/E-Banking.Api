@@ -9,9 +9,11 @@ public static class JwtDefaults
 
     public const string Algorithm = SecurityAlgorithms.HmacSha256;
 
-    private static readonly byte[] _secretBytes;
+    public static readonly SecurityKey Key;
 
-    public static SecurityKey Key => new SymmetricSecurityKey(_secretBytes);
-
-    static JwtDefaults() => _secretBytes = Encoding.UTF8.GetBytes(Secret);
+    static JwtDefaults()
+    {
+        var secretBytes = Encoding.UTF8.GetBytes(Secret);
+        Key = new SymmetricSecurityKey(secretBytes);
+    }
 }
