@@ -2,14 +2,15 @@
 using EBanking.Api.Security;
 using EBanking.Api.Services;
 using EBanking.Api.Validators;
+using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services) =>
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration) =>
         services
-        .AddDbContextFactory<EBankingDbContext, EBankingDbContextFactory>()
+        .AddDbContext<EBankingDbContext>(o => o.UseSqlServer(configuration.GetConnectionString("EBankingDb")))
         .AddServicesLayer()
         .AddValidatorsLayer()
         .AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>()

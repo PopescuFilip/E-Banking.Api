@@ -1,6 +1,5 @@
 ﻿using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api.Services;
 
@@ -11,20 +10,16 @@ public interface IUserService
     bool Create(string email, string password);
 }
 
-public class UserService(IDbContextFactory<EBankingDbContext> _dbContextFactory) : IUserService
+public class UserService(EBankingDbContext _dbContext) : IUserService
 {
     public bool Exists(string email)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
-
-        return dbContext.Users.Any(u => u.Email == email);
+        return _dbContext.Users.Any(u => u.Email == email);
     }
 
     public bool Exists(string email, string password)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
-
-        return dbContext.Users.Any(u => u.Email == email && u.Password == password);
+        return _dbContext.Users.Any(u => u.Email == email && u.Password == password);
     }
 
     public bool Create(string email, string password)
@@ -32,12 +27,10 @@ public class UserService(IDbContextFactory<EBankingDbContext> _dbContextFactory)
         if (Exists(email))
             return false;
 
-        using var dbContext = _dbContextFactory.CreateDbContext();
-
         var user = new User(email, password);
 
-        dbContext.Users.Add(user);
-        dbContext.SaveChanges();
+        _dbContext.Users.Add(user);
+        _dbContext.SaveChanges();
         return true;
     }
 }

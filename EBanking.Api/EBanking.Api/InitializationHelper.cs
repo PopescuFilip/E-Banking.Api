@@ -4,20 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api;
 
-public class InitializationHelper(IDbContextFactory<EBankingDbContext> _dbContextFactory)
+public class InitializationHelper(EBankingDbContext _dbContext)
 {
     public void MigrateAndInitializeDb()
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        _dbContext.Database.Migrate();
 
-        dbContext.Database.Migrate();
-
-        if (!dbContext.Users.Any())
+        if (!_dbContext.Users.Any())
         {
             var admin = new User(email: "admin@gmail.com", password: "pass");
 
-            dbContext.Users.Add(admin);
-            dbContext.SaveChanges();
+            _dbContext.Users.Add(admin);
+            _dbContext.SaveChanges();
         }
     }
 }

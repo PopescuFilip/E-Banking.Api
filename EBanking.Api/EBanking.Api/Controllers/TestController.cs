@@ -3,13 +3,12 @@ using EBanking.Api.DB.Models;
 using EBanking.Api.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api.Controllers;
 
 [ApiController]
 [Route("api/test")]
-public class TestController(IDbContextFactory<EBankingDbContext> _dbContextFactory) : Controller
+public class TestController(EBankingDbContext _dbContext) : Controller
 {
     [HttpGet]
     public string Get() => "test";
@@ -20,9 +19,7 @@ public class TestController(IDbContextFactory<EBankingDbContext> _dbContextFacto
     {
         var subject = HttpContext.GetSubjectClaimValue();
 
-        using var dbContext = _dbContextFactory.CreateDbContext();
-
-        var allUsers = dbContext.Users.ToList();
+        var allUsers = _dbContext.Users.ToList();
 
         return allUsers;
     }
