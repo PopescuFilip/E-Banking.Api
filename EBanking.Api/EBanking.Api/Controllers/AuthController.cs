@@ -33,7 +33,7 @@ public class AuthController(
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterDto registerInfo)
     {
-        var (email, password) = registerInfo;
+        var (name, phoneNumber, email, password) = registerInfo;
 
         if (!_emailValidator.IsValid(email))
             return BadRequest(string.Format(InvalidEmailFormat, email));
@@ -41,7 +41,7 @@ public class AuthController(
         if (_userService.Exists(email))
             return BadRequest(DuplicateEmailMessage);
 
-        if (!_userService.Create(email, password))
+        if (!_userService.Create(name, phoneNumber, email, password))
             return BadRequest();
 
         return Ok();
