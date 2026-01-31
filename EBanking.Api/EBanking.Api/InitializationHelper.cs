@@ -12,7 +12,11 @@ public class InitializationHelper(EBankingDbContext _dbContext)
 
         if (!_dbContext.Users.Any())
         {
-            var admin = new User(email: "admin@gmail.com", password: "pass");
+            var admin = new User(
+                name: "admin",
+                phoneNumber: "1234567890",
+                email: "admin@gmail.com",
+                password: "pass");
 
             _dbContext.Users.Add(admin);
             _dbContext.SaveChanges();
