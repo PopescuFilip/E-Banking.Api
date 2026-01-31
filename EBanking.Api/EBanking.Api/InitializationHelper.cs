@@ -1,25 +1,31 @@
 ﻿using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
+using EBanking.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api;
 
-public class InitializationHelper(EBankingDbContext _dbContext)
+public class InitializationHelper(IServiceProvider serviceProvider)
 {
     public void MigrateAndInitializeDb()
     {
-        _dbContext.Database.Migrate();
+        var dbContext = serviceProvider.GetRequiredService<EBankingDbContext>();
+        dbContext.Database.Migrate();
 
-        if (!_dbContext.Users.Any())
+        if (!dbContext.Users.Any())
         {
+            var email = "admin@gmail.com";
+            var account = serviceProvider.GetRequiredService<IAccountService>().CreateAccount(email);
+
             var admin = new User(
                 name: "admin",
                 phoneNumber: "1234567890",
-                email: "admin@gmail.com",
-                password: "pass");
+                email: email,
+                password: "pass",
+                accountId: account.Id);
 
-            _dbContext.Users.Add(admin);
-            _dbContext.SaveChanges();
+            dbContext.Users.Add(admin);
+            dbContext.SaveChanges();
         }
     }
 }

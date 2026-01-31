@@ -10,6 +10,7 @@ namespace EBanking.Api.Controllers;
 [Route("api/auth")]
 public class AuthController(
     IUserService _userService,
+    IAccountService _accountService,
     IJwtTokenGenerator _jwtTokenGenerator,
     IEmailValidator _emailValidator)
     : Controller
@@ -41,7 +42,9 @@ public class AuthController(
         if (_userService.Exists(email))
             return BadRequest(DuplicateEmailMessage);
 
-        if (!_userService.Create(name, phoneNumber, email, password))
+        var account = _accountService.CreateAccount(email);
+
+        if (!_userService.Create(name, phoneNumber, email, password, account.Id))
             return BadRequest();
 
         return Ok();

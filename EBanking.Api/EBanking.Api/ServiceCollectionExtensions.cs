@@ -18,7 +18,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddServicesLayer(this IServiceCollection services) =>
         services
-        .AddTransient<IUserService, UserService>();
+        .AddScoped<IIbanGenerator, IbanGenerator>()
+        .AddScoped<IAccountService, AccountService>()
+        .AddScoped<IUserService, UserService>();
 
     private static IServiceCollection AddValidatorsLayer(this IServiceCollection services) =>
         services
