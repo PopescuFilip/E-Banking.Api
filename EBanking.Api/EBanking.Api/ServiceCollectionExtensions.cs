@@ -24,5 +24,6 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddValidatorsLayer(this IServiceCollection services) =>
         services
-        .AddTransient<IEmailValidator, EmailValidator>();
+        .AddSingleton<IPhoneNumberValidator, PhoneNumberValidator>()
+        .AddSingleton<IEmailValidator, EmailValidator>();
 }

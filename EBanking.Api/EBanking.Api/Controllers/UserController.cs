@@ -1,6 +1,7 @@
 using EBanking.Api.DB;
 using EBanking.Api.DTOs;
 using EBanking.Api.Security;
+using EBanking.Api.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +10,13 @@ namespace EBanking.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/user")]
-public class UserController(EBankingDbContext _dbContext) : ControllerBase
+public class UserController(
+    EBankingDbContext _dbContext,
+    IPhoneNumberValidator _phoneNumberValidator)
+    : ControllerBase
 {
+    private const string InvalidPhoneNumberFormat = "\'{0}\' is an invalid phoneNumber";
+
     [HttpGet("user-details")]
     public IActionResult GetUserDetails()
     {
@@ -30,6 +36,9 @@ public class UserController(EBankingDbContext _dbContext) : ControllerBase
     public IActionResult UpdateUserDetails([FromBody] UpdateUserDetailsRequest request)
     {
         var senderEmail = HttpContext.GetSubjectClaimValue();
+
+        if (!_phoneNumberValidator.IsValid(request.PhoneNumber))
+            return BadRequest(string.Format(InvalidPhoneNumberFormat, request.PhoneNumber));
 
         var user = _dbContext.Users.SingleOrDefault(x => x.Email == senderEmail);
 

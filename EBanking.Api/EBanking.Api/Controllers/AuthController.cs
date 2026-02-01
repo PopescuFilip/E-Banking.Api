@@ -12,12 +12,14 @@ public class AuthController(
     IUserService _userService,
     IAccountService _accountService,
     IJwtTokenGenerator _jwtTokenGenerator,
-    IEmailValidator _emailValidator)
+    IEmailValidator _emailValidator,
+    IPhoneNumberValidator _phoneNumberValidator)
     : Controller
 {
     private const string InvalidLoginMessage = "Invalid email or password";
     private const string DuplicateEmailMessage = "Email is already used by different account";
     private const string InvalidEmailFormat = "\'{0}\' is an invalid email";
+    private const string InvalidPhoneNumberFormat = "\'{0}\' is an invalid phoneNumber";
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginDto loginInfo)
@@ -38,6 +40,9 @@ public class AuthController(
 
         if (!_emailValidator.IsValid(email))
             return BadRequest(string.Format(InvalidEmailFormat, email));
+
+        if (!_phoneNumberValidator.IsValid(phoneNumber))
+            return BadRequest(string.Format(InvalidPhoneNumberFormat, phoneNumber));
 
         if (_userService.Exists(email))
             return BadRequest(DuplicateEmailMessage);
