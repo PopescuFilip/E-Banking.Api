@@ -44,6 +44,14 @@ public class InitializationHelper(IServiceProvider serviceProvider)
                 password: "pass",
                 accountId: account3.Id);
 
+            account.Balance = 566.43M;
+            account2.Balance = 1022.30M;
+            account3.Balance = 200M;
+
+            dbContext.Accounts.Update(account);
+            dbContext.Accounts.Update(account2);
+            dbContext.Accounts.Update(account3);
+
             dbContext.Users.Add(admin);
             dbContext.Users.Add(otherUser);
             dbContext.Users.Add(johnDoe);
