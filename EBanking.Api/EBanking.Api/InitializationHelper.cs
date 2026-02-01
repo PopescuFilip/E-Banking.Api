@@ -34,8 +34,19 @@ public class InitializationHelper(IServiceProvider serviceProvider)
                 password: "pass",
                 accountId: account2.Id);
 
+            var email3 = "john.doe@gmail.com";
+            var account3 = serviceProvider.GetRequiredService<IAccountService>().CreateAccount(email3);
+
+            var johnDoe = new User(
+                name: "John Doe",
+                phoneNumber: "0744399888",
+                email: email3,
+                password: "pass",
+                accountId: account3.Id);
+
             dbContext.Users.Add(admin);
             dbContext.Users.Add(otherUser);
+            dbContext.Users.Add(johnDoe);
             dbContext.SaveChanges();
         }
     }
