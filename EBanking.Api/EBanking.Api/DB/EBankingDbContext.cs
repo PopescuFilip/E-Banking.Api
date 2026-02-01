@@ -9,10 +9,16 @@ public class EBankingDbContext(DbContextOptions<EBankingDbContext> dbContextOpti
 
     public DbSet<Account> Accounts { get; set; }
 
+    public DbSet<Transaction> Transactions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>()
             .Property(x => x.Balance)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Transaction>()
+            .Property(x => x.Amount)
             .HasPrecision(18, 2);
 
         base.OnModelCreating(modelBuilder);
