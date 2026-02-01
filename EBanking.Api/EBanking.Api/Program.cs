@@ -1,5 +1,6 @@
 using EBanking.Api;
 using EBanking.Api.Security;
+using EBanking.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerConfigurator.Configure);
 
 builder.Services.AddAuthorization();
+builder.Services.AddHostedService<RecurringPaymentHostedService>();
 
 var app = builder.Build();
 
