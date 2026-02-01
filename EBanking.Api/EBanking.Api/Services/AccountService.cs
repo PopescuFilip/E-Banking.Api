@@ -33,6 +33,7 @@ public class AccountService(
     public bool IsAccountOwner(string ownerEmail, string iban)
     {
         var accountForOwner = _dbContext.Users
+            .Where(u => u.Email == ownerEmail)
             .Select(x => new { x.Account.Iban })
             .SingleOrDefault();
 
