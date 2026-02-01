@@ -16,13 +16,13 @@ public class PaymentController(IAccountService _accountService, IPaymentService 
     {
         var subject = HttpContext.GetSubjectClaimValue();
 
-        if (_accountService.Exists(request.FromIban))
+        if (!_accountService.Exists(request.FromIban))
             return NotFound($"Account {request.FromIban} does not exist");
 
-        if (_accountService.Exists(request.ToIban))
+        if (!_accountService.Exists(request.ToIban))
             return NotFound($"Account {request.ToIban} does not exist");
 
-        if (_accountService.IsAccountOwner(subject, request.FromIban))
+        if (!_accountService.IsAccountOwner(subject, request.FromIban))
             return Unauthorized($"You do not have access to account {request.FromIban}");
 
         if (!_paymentService.MakePayment(request))
