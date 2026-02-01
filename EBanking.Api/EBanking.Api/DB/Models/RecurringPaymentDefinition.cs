@@ -10,7 +10,7 @@ public enum Recurrency
     Yearly
 }
 
-public class RecurringPaymentDefinition(string senderIban, string receiverIban, decimal amount, Recurrency recurency,
+public class RecurringPaymentDefinition(string senderIban, string receiverIban, decimal amount, Recurrency recurrency,
     DateTime lastMadePayment, Guid userId)
 {
     [Key]
@@ -22,7 +22,7 @@ public class RecurringPaymentDefinition(string senderIban, string receiverIban, 
 
     public decimal Amount { get; private set; } = amount;
 
-    public Recurrency Recurency { get; private set; } = recurency;
+    public Recurrency Recurrency { get; private set; } = recurrency;
 
     public DateTime LastMadePayment { get; set; } = lastMadePayment;
 
