@@ -1,46 +1,51 @@
 ﻿using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
-using EBanking.Api.DTOs;
+using EBanking.Api.DTOs.Payment;
 
 namespace EBanking.Api.Services;
 
 public interface IPaymentService
 {
-    bool MakePayment(CreateTransactionOptions transactionOptions);
+    bool MakePayment(OneTimePaymentOptions options);
 
-    //bool MakePayment(OneTimePaymentRequest paymentRequest);
+    bool MakePayment(RecurringPaymentOptions options);
 }
 
 public class PaymentService(EBankingDbContext _dbContext) : IPaymentService
 {
-    public bool MakePayment(CreateTransactionOptions transactionOptions)
+    public bool MakePayment(OneTimePaymentOptions options)
     {
-        var senderAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == transactionOptions.FromIban);
+        var senderAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == options.FromIban);
         if (senderAccount == null)
             return false;
 
-        if (senderAccount.Balance < transactionOptions.Amount)
+        if (senderAccount.Balance < options.Amount)
             return false;
 
-        var receiverAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == transactionOptions.ToIban);
+        var receiverAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == options.ToIban);
         if (receiverAccount == null)
             return false;
 
-        senderAccount.Balance -= transactionOptions.Amount;
-        receiverAccount.Balance += transactionOptions.Amount;
+        senderAccount.Balance -= options.Amount;
+        receiverAccount.Balance += options.Amount;
         _dbContext.Accounts.Update(senderAccount);
         _dbContext.Accounts.Update(receiverAccount);
 
         var newTransaction = Transaction.CreateNew(
-            SenderIban: transactionOptions.FromIban,
-            ReceiverIban: transactionOptions.ToIban,
-            ReceiverAccountName: transactionOptions.ToAccountName,
-            Amount: transactionOptions.Amount,
-            Details: transactionOptions.Details
+            SenderIban: options.FromIban,
+            ReceiverIban: options.ToIban,
+            ReceiverAccountName: options.ToAccountName,
+            Amount: options.Amount,
+            Details: options.Details
             );
         _dbContext.Transactions.Add(newTransaction);
 
         _dbContext.SaveChanges();
         return true;
+    }
+
+    public bool MakePayment(RecurringPaymentOptions options)
+    {
+        throw new NotImplementedException();
     }
 }

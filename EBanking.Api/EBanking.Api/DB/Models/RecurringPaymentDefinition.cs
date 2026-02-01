@@ -2,7 +2,7 @@
 
 namespace EBanking.Api.DB.Models;
 
-public enum Recurency
+public enum Recurrency
 {
     Daily,
     Weekly,
@@ -10,7 +10,7 @@ public enum Recurency
     Yearly
 }
 
-public class RecurringPaymentDefinition(string senderIban, string receiverIban, decimal amount, Recurency recurency,
+public class RecurringPaymentDefinition(string senderIban, string receiverIban, decimal amount, Recurrency recurency,
     DateTime lastMadePayment, Guid userId)
 {
     [Key]
@@ -22,7 +22,7 @@ public class RecurringPaymentDefinition(string senderIban, string receiverIban, 
 
     public decimal Amount { get; private set; } = amount;
 
-    public Recurency Recurency { get; private set; } = recurency;
+    public Recurrency Recurency { get; private set; } = recurency;
 
     public DateTime LastMadePayment { get; set; } = lastMadePayment;
 

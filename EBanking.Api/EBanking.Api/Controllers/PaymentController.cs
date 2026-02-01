@@ -1,4 +1,4 @@
-﻿using EBanking.Api.DTOs;
+﻿using EBanking.Api.DTOs.Payment;
 using EBanking.Api.Security;
 using EBanking.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -47,6 +47,8 @@ public class PaymentController(IAccountService _accountService, IPaymentService 
 
         if (!request.Recurrency.TryParseRecurrency(out var recurency))
             return BadRequest($"{request.Recurrency} is not a valid recurrency");
+
+
 
         return Ok();
     }
