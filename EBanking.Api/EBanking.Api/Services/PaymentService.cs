@@ -1,41 +1,42 @@
 ﻿using EBanking.Api.DB;
 using EBanking.Api.DB.Models;
 using EBanking.Api.DTOs;
-using Microsoft.EntityFrameworkCore;
 
 namespace EBanking.Api.Services;
 
 public interface IPaymentService
 {
-    bool MakePayment(OneTimePaymentRequest paymentRequest);
+    bool MakePayment(CreateTransactionOptions transactionOptions);
+
+    //bool MakePayment(OneTimePaymentRequest paymentRequest);
 }
 
 public class PaymentService(EBankingDbContext _dbContext) : IPaymentService
 {
-    public bool MakePayment(OneTimePaymentRequest paymentRequest)
+    public bool MakePayment(CreateTransactionOptions transactionOptions)
     {
-        var senderAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == paymentRequest.FromIban);
+        var senderAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == transactionOptions.FromIban);
         if (senderAccount == null)
             return false;
 
-        if (senderAccount.Balance < paymentRequest.Amount)
+        if (senderAccount.Balance < transactionOptions.Amount)
             return false;
 
-        var receiverAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == paymentRequest.ToIban);
+        var receiverAccount = _dbContext.Accounts.SingleOrDefault(a => a.Iban == transactionOptions.ToIban);
         if (receiverAccount == null)
             return false;
 
-        senderAccount.Balance -= paymentRequest.Amount;
-        receiverAccount.Balance += paymentRequest.Amount;
+        senderAccount.Balance -= transactionOptions.Amount;
+        receiverAccount.Balance += transactionOptions.Amount;
         _dbContext.Accounts.Update(senderAccount);
         _dbContext.Accounts.Update(receiverAccount);
 
         var newTransaction = Transaction.CreateNew(
-            SenderIban: paymentRequest.FromIban,
-            ReceiverIban: paymentRequest.ToIban,
-            ReceiverAccountName: paymentRequest.ToAccountName,
-            Amount: paymentRequest.Amount,
-            Details: paymentRequest.Details
+            SenderIban: transactionOptions.FromIban,
+            ReceiverIban: transactionOptions.ToIban,
+            ReceiverAccountName: transactionOptions.ToAccountName,
+            Amount: transactionOptions.Amount,
+            Details: transactionOptions.Details
             );
         _dbContext.Transactions.Add(newTransaction);
 
