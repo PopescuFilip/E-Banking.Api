@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddServicesLayer(this IServiceCollection services) =>
         services
         .AddScoped<IIbanGenerator, IbanGenerator>()
+        .AddScoped<IPaymentService, PaymentService>()
         .AddScoped<IAccountService, AccountService>()
         .AddScoped<IUserService, UserService>();
 
