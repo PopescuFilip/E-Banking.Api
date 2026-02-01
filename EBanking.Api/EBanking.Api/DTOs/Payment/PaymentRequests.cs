@@ -5,7 +5,7 @@ namespace EBanking.Api.DTOs.Payment;
 
 public record OneTimePaymentRequest(string FromIban, string ToAccountName, string ToIban, decimal Amount, string Details);
 
-public record RecurringPaymentRequest(string FromIban, string ToIban, string Recurrency, decimal Amount);
+public record RecurringPaymentRequest(string FromIban, string ToAccountName, string ToIban, decimal Amount, string Details, string Recurrency);
 
 public static class PaymentRequestExtensions
 {

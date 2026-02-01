@@ -11,7 +11,7 @@ public enum Recurrency
 }
 
 public class RecurringPaymentDefinition(string senderIban, string receiverIban, decimal amount, Recurrency recurrency,
-    DateTime lastMadePayment, Guid userId)
+    DateTime lastMadePayment, Guid userId, string receiverAccountName, string details)
 {
     [Key]
     public int Id { get; private set; }
@@ -19,6 +19,10 @@ public class RecurringPaymentDefinition(string senderIban, string receiverIban, 
     public string SenderIban { get; private set; } = senderIban;
 
     public string ReceiverIban { get; private set; } = receiverIban;
+
+    public string ReceiverAccountName { get; private set; } = receiverAccountName;
+
+    public string Details { get; private set; } = details;
 
     public decimal Amount { get; private set; } = amount;
 

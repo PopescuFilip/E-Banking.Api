@@ -51,10 +51,13 @@ public class PaymentController(IAccountService _accountService, IPaymentService 
         var options = new RecurringPaymentOptions(
             FromIban: request.FromIban,
             ToIban: request.ToIban,
-            Recurrency: recurency.Value,
-            Amount: request.Amount
-            );
-        _paymentService.MakePayment(options);
+            ToAccountName: request.ToAccountName,
+            Amount: request.Amount,
+            Details: request.Details,
+            Recurrency: recurency.Value);
+
+        if (!_paymentService.MakePayment(options))
+            return BadRequest("Could not create recurring payment");
 
         return Ok();
     }
