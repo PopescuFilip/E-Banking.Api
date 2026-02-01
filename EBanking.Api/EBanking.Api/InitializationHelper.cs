@@ -55,6 +55,14 @@ public class InitializationHelper(IServiceProvider serviceProvider)
             dbContext.Users.Add(admin);
             dbContext.Users.Add(otherUser);
             dbContext.Users.Add(johnDoe);
+
+            var transaction1 = Transaction.CreateNew(account.Iban, account2.Iban, "Filip", 30, "Food");
+            var transaction2 = Transaction.CreateNew(account3.Iban, account2.Iban, "Filip", 100, "Gift");
+            var transaction3 = Transaction.CreateNew(account2.Iban, account3.Iban, "John Doe", 42.33M, "Pizza");
+            dbContext.Transactions.Add(transaction1);
+            dbContext.Transactions.Add(transaction2);
+            dbContext.Transactions.Add(transaction3);
+
             dbContext.SaveChanges();
         }
     }
