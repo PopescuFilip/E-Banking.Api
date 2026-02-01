@@ -24,7 +24,18 @@ public class InitializationHelper(IServiceProvider serviceProvider)
                 password: "pass",
                 accountId: account.Id);
 
+            var email2 = "filip@gmail.com";
+            var account2 = serviceProvider.GetRequiredService<IAccountService>().CreateAccount(email2);
+
+            var otherUser = new User(
+                name: "Popescu Filip",
+                phoneNumber: "0742444222",
+                email: email2,
+                password: "pass",
+                accountId: account2.Id);
+
             dbContext.Users.Add(admin);
+            dbContext.Users.Add(otherUser);
             dbContext.SaveChanges();
         }
     }
