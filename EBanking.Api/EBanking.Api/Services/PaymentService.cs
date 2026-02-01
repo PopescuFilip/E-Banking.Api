@@ -46,6 +46,30 @@ public class PaymentService(EBankingDbContext _dbContext) : IPaymentService
 
     public bool MakePayment(RecurringPaymentOptions options)
     {
-        throw new NotImplementedException();
+        var userId = _dbContext.Users
+            .Where(u => u.Account.Iban == options.FromIban)
+            .Select(u => new { UserId = u.Id })
+            .FirstOrDefault();
+
+        if (userId == null)
+            return false;
+
+        var lastMadePayment = DateTime.MinValue;
+        if (MakePayment(options as OneTimePaymentOptions))
+            lastMadePayment = DateTime.Now;
+
+        var recurringPayment = new RecurringPaymentDefinition(
+            senderIban: options.FromIban,
+            receiverIban: options.ToIban,
+            amount: options.Amount,
+            recurrency: options.Recurrency,
+            lastMadePayment: lastMadePayment,
+            userId: userId.UserId,
+            receiverAccountName: options.ToAccountName,
+            details: options.Details);
+
+        _dbContext.PaymentDefinitions.Add(recurringPayment);
+        _dbContext.SaveChanges();
+        return true;
     }
 }
