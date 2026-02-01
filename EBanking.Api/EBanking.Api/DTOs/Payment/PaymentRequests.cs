@@ -9,7 +9,7 @@ public record RecurringPaymentRequest(string FromIban, string ToIban, string Rec
 
 public static class PaymentRequestExtensions
 {
-    public static bool TryParseRecurrency(this string recurrencyString, [MaybeNullWhen(false)] out Recurrency? recurency)
+    public static bool TryParseRecurrency(this string recurrencyString, [MaybeNullWhen(false)][NotNullWhen(true)] out Recurrency? recurency)
     {
         recurency = null;
 

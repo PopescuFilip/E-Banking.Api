@@ -48,7 +48,13 @@ public class PaymentController(IAccountService _accountService, IPaymentService 
         if (!request.Recurrency.TryParseRecurrency(out var recurency))
             return BadRequest($"{request.Recurrency} is not a valid recurrency");
 
-
+        var options = new RecurringPaymentOptions(
+            FromIban: request.FromIban,
+            ToIban: request.ToIban,
+            Recurrency: recurency.Value,
+            Amount: request.Amount
+            );
+        _paymentService.MakePayment(options);
 
         return Ok();
     }
