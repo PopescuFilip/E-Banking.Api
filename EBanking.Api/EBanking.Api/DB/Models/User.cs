@@ -15,6 +15,10 @@ public class User
 
     public string Password { get; set; } = null!;
 
-    public User(string name, string phoneNumber, string email, string password) =>
-        (Name, PhoneNumber, Email, Password) = (name, phoneNumber, email, password);
+    public int AccountId { get; private set; }
+
+    public Account Account { get; private set; } = null!;
+
+    public User(string name, string phoneNumber, string email, string password, int accountId) =>
+        (Name, PhoneNumber, Email, Password, AccountId) = (name, phoneNumber, email, password, accountId);
 }
