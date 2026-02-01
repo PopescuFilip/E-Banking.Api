@@ -5,9 +5,9 @@ namespace EBanking.Api.DB.Models;
 public class Account
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
 
-    public string Iban { get; set; } = null!;
+    public string Iban { get; private set; } = null!;
 
     public decimal Balance { get; set; } = 0;
 
