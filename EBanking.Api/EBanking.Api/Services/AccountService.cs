@@ -27,7 +27,7 @@ public class AccountService(
 
     public bool Exists(string iban)
     {
-        return _dbContext.Accounts.Where(a => a.Iban == iban).Any();
+        return !_dbContext.Accounts.Where(a => a.Iban == iban).Any();
     }
 
     public bool IsAccountOwner(string ownerEmail, string iban)
