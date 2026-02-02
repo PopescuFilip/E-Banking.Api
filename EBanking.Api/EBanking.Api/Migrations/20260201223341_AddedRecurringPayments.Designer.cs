@@ -4,6 +4,7 @@ using EBanking.Api.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EBanking.Api.Migrations
 {
     [DbContext(typeof(EBankingDbContext))]
-    partial class EBankingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260201223341_AddedRecurringPayments")]
+    partial class AddedRecurringPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,22 +58,14 @@ namespace EBanking.Api.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastMadePayment")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("ReceiverAccountName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReceiverIban")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Recurrency")
+                    b.Property<int>("Recurency")
                         .HasColumnType("int");
 
                     b.Property<string>("SenderIban")

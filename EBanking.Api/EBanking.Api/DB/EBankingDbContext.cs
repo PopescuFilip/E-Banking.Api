@@ -11,6 +11,8 @@ public class EBankingDbContext(DbContextOptions<EBankingDbContext> dbContextOpti
 
     public DbSet<Transaction> Transactions { get; set; }
 
+    public DbSet<RecurringPaymentDefinition> PaymentDefinitions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>()
@@ -18,6 +20,10 @@ public class EBankingDbContext(DbContextOptions<EBankingDbContext> dbContextOpti
             .HasPrecision(18, 2);
 
         modelBuilder.Entity<Transaction>()
+            .Property(x => x.Amount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<RecurringPaymentDefinition>()
             .Property(x => x.Amount)
             .HasPrecision(18, 2);
 
