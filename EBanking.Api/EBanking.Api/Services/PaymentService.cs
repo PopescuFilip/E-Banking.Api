@@ -31,13 +31,7 @@ public class PaymentService(EBankingDbContext _dbContext) : IPaymentService
         _dbContext.Accounts.Update(senderAccount);
         _dbContext.Accounts.Update(receiverAccount);
 
-        var newTransaction = Transaction.CreateNew(
-            SenderIban: options.FromIban,
-            ReceiverIban: options.ToIban,
-            ReceiverAccountName: options.ToAccountName,
-            Amount: options.Amount,
-            Details: options.Details
-            );
+        var newTransaction = options.ToTransaction();
         _dbContext.Transactions.Add(newTransaction);
 
         _dbContext.SaveChanges();
