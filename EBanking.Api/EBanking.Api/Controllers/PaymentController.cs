@@ -68,7 +68,7 @@ public class PaymentController(
         return Ok();
     }
 
-    [HttpGet("recurring-definitions")]
+    [HttpGet("recurring-payments")]
     public IActionResult GetRecurringPaymentDefinitions()
     {
         var subject = HttpContext.GetSubjectClaimValue();
@@ -82,9 +82,10 @@ public class PaymentController(
 
         var recurringPaymentDefinitions = _dbContext.PaymentDefinitions
             .Where(x => x.UserId == userId.Id)
-            .Select(x => new { x.ReceiverIban, x.ReceiverAccountName, x.LastMadePayment, x.Recurrency, x.Amount })
+            .Select(x => new { x.Id, x.ReceiverIban, x.ReceiverAccountName, x.LastMadePayment, x.Recurrency, x.Amount })
             .AsEnumerable()
             .Select(x => new RecurringPaymentDto(
+                x.Id,
                 x.ReceiverIban,
                 x.ReceiverAccountName,
                 x.LastMadePayment.GetNextPaymentDate(x.Recurrency),
@@ -93,5 +94,30 @@ public class PaymentController(
             .ToList();
 
         return Ok(recurringPaymentDefinitions);
+    }
+
+    [HttpDelete("recurring-payment/{id}")]
+    public IActionResult Delete(int id)
+    {
+        var subject = HttpContext.GetSubjectClaimValue();
+
+        var userId = _dbContext.Users
+            .Select(x => new { x.Id, x.Email })
+            .FirstOrDefault(x => x.Email == subject);
+
+        if (userId == null)
+            return NotFound($"User not found for email {subject}");
+
+        var recurringPayment = _dbContext.PaymentDefinitions.Find(id);
+        if (recurringPayment == null)
+            return NotFound($"Recurring payment with id {id} not found");
+
+        if (recurringPayment.UserId != userId.Id)
+            return Unauthorized();
+
+        _dbContext.PaymentDefinitions.Remove(recurringPayment);
+        _dbContext.SaveChanges();
+
+        return Ok();
     }
 }
