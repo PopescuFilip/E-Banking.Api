@@ -1,4 +1,7 @@
-﻿using EBanking.Api.DTOs.Payment;
+﻿using EBanking.Api.DB;
+using EBanking.Api.DB.Models;
+using EBanking.Api.DTOs;
+using EBanking.Api.DTOs.Payment;
 using EBanking.Api.Security;
 using EBanking.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +12,10 @@ namespace EBanking.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/payment")]
-public class PaymentController(IAccountService _accountService, IPaymentService _paymentService) : ControllerBase
+public class PaymentController(
+    EBankingDbContext _dbContext,
+    IAccountService _accountService,
+    IPaymentService _paymentService) : ControllerBase
 {
     [HttpPost("one-time")]
     public IActionResult MakeOneTimePayment([FromBody] OneTimePaymentRequest request)
@@ -60,5 +66,32 @@ public class PaymentController(IAccountService _accountService, IPaymentService 
             return BadRequest("Could not create recurring payment");
 
         return Ok();
+    }
+
+    [HttpGet("recurring-definitions")]
+    public IActionResult GetRecurringPaymentDefinitions()
+    {
+        var subject = HttpContext.GetSubjectClaimValue();
+
+        var userId = _dbContext.Users
+            .Select(x => new { x.Id, x.Email })
+            .FirstOrDefault(x => x.Email == subject);
+
+        if (userId == null)
+            return NotFound($"User not found for email {subject}");
+
+        var recurringPaymentDefinitions = _dbContext.PaymentDefinitions
+            .Where(x => x.UserId == userId.Id)
+            .Select(x => new { x.ReceiverIban, x.ReceiverAccountName, x.LastMadePayment, x.Recurrency, x.Amount })
+            .AsEnumerable()
+            .Select(x => new RecurringPaymentDto(
+                x.ReceiverIban,
+                x.ReceiverAccountName,
+                x.LastMadePayment.GetNextPaymentDate(x.Recurrency),
+                x.Recurrency.ToString(),
+                x.Amount))
+            .ToList();
+
+        return Ok(recurringPaymentDefinitions);
     }
 }

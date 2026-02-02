@@ -11,6 +11,16 @@ public class RecurringPaymentHostedService(IServiceProvider _serviceProvider) : 
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        Run(cancellationToken);
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        //
+    }
+
+    public async Task Run(CancellationToken cancellationToken)
+    {
         while (!cancellationToken.IsCancellationRequested)
         {
             using var scope = _serviceProvider.CreateAsyncScope();
@@ -25,11 +35,6 @@ public class RecurringPaymentHostedService(IServiceProvider _serviceProvider) : 
 
             await Task.Delay(IntervalBetweenChecks, cancellationToken);
         }
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        //
     }
 
     private void ApplyPayment(RecurringPaymentDefinition paymentDefinition)
